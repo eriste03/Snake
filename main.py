@@ -170,23 +170,10 @@ class MainWindow:
             self.clock.tick(MainWindow.FRAMES_PER_SECOND)
 
 
-def inputValidation(inputString:str, validInputs: list[int]):
-    while True:
-        try:
-            inp = int(input(inputString))
-            if inp in validInputs:
-                break
-        except ValueError:
-            pass
-        print("INVALID INPUT. TRY AGAIN\n")
-    return inp
-
 def main():
-    # Constants
-    SIZES = {1: "SMALL", 2: "MEDIUM", 3: "LARGE"}
-    DIFFICULTIES = {1: "EASY", 2: "MEDIUM", 3: "HARD"}
-
-    # Generate game object
+    """
+    Generate game object
+    """
     window = MainWindow()
     window.run()
 
