@@ -19,8 +19,8 @@ class MainWindow:
         self.crashSound = pygame.mixer.Sound("sounds/gameover.mp3")
 
         # Default settings
-        self.difficulty = MainWindow.MOVES_PER_SECOND["MEDIUM"]
-        self.size = Board.SIZE["SMALL"]
+        self.difficulty = "MEDIUM"
+        self.size = "SMALL"
 
         # Initialize game
         self.initialize()
