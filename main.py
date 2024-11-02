@@ -108,9 +108,10 @@ class MainWindow:
         self.snake = Snake(self.board.snake)
         self.apple = Apple(self.board.apple, self.board.board)
         self.cellSize = 800 / self.board.size[0]
-        self.movesPerSecond = 1000 // MainWindow.MOVES_PER_SECOND[self.difficulty]
+        # self.movesPerSecond = 1000 // MainWindow.MOVES_PER_SECOND[self.difficulty]
         self.lastMoveTime = pygame.time.get_ticks()
         self.alreadyMoved = False
+        self.started = False
         self.run()
 
     def draw(self):
@@ -136,18 +137,20 @@ class MainWindow:
         while True:
 
             # Get current time and move if ready
-            currentTime = pygame.time.get_ticks()
-            if currentTime - self.lastMoveTime >= self.movesPerSecond:
-                moveResult = self.snake.move(self.apple.pos, self.board.board)
-                if moveResult["Crashed"]:
-                    pygame.mixer.Sound.play(self.crashSound)
-                    time.sleep(3)
-                    self.initialize()
-                if moveResult["Eating"]:
-                    pygame.mixer.Sound.play(self.eatingSound)
-                    self.apple.changePos(self.snake.pos)
-                self.lastMoveTime = currentTime
-                self.alreadyMoved = False
+            if self.started:
+                currentTime = pygame.time.get_ticks()
+                if currentTime - self.lastMoveTime >= self.movesPerSecond:
+                    moveResult = self.snake.move(self.apple.pos, self.board.board)
+                    if moveResult["Crashed"]:
+                        self.started = False
+                        pygame.mixer.Sound.play(self.crashSound)
+                        time.sleep(3)
+                        self.initialize()
+                    if moveResult["Eating"]:
+                        pygame.mixer.Sound.play(self.eatingSound)
+                        self.apple.changePos(self.snake.pos)
+                    self.lastMoveTime = currentTime
+                    self.alreadyMoved = False
 
             # Get events
             for event in pygame.event.get():
@@ -159,6 +162,9 @@ class MainWindow:
                 
                 # On keypress
                 if event.type == pygame.KEYDOWN:
+                    if not self.started:
+                        self.movesPerSecond = 1000 // MainWindow.MOVES_PER_SECOND[self.difficulty]
+                        self.started = True
                     if not self.alreadyMoved:
                         if self.snake.updateHeading(event.key):
                             self.alreadyMoved = True
